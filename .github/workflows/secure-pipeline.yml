@@ -117,6 +117,15 @@ jobs:
         with:
           sarif_file: reports/dependency-check-report.sarif
 
+- name: Debug SARIF
+  run: |
+    ls -lah trivy-results.sarif || true
+    wc -c trivy-results.sarif || true
+    head -n 30 trivy-results.sarif || true
+    jq '.runs | length' trivy-results.sarif
+
+
+
   # 3. 容器映像安全掃描（僅在存在容器相關檔案時執行）
   container-scan:
     runs-on: ubuntu-latest
