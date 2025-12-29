@@ -331,6 +331,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Verify Sonar env
+        run: |
+          test -n "${SONAR_HOST_URL}" || (echo "SONAR_HOST_URL is empty" && exit 1)
+          echo "SONAR_HOST_URL=${SONAR_HOST_URL}"
+          echo "${SONAR_HOST_URL}" | grep -E '^https?://'
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v2
         env:
