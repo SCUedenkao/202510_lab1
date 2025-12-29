@@ -1,8 +1,8 @@
 # 使用輕量級的 Nginx Alpine 映像
-FROM nginx:alpine3.18-perl
+FROM nginx:stable-alpine3.23-perl
 
 # 維護者資訊
-LABEL org.opencontainers.image.source="https://github.com/YOUR_USERNAME/YOUR_REPO"
+LABEL org.opencontainers.image.source="SCUedenkao/202510_lab1"
 LABEL org.opencontainers.image.description="井字遊戲 - 靜態網頁應用"
 LABEL org.opencontainers.image.licenses="MIT"
 
