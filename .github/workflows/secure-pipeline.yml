@@ -2,16 +2,13 @@ name: Secure CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  packages: write
 
 jobs:
   # 1. 原始碼安全掃描 (SAST)
@@ -418,3 +415,4 @@ jobs:
           echo "網站 URL: ${{ steps.deployment.outputs.page_url }}"
           echo ""
           echo "安全狀態: ${{ needs.security-summary.outputs.all-passed }}"
+          
