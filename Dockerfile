@@ -25,7 +25,7 @@ RUN sed -i 's/listen\s*80;/listen 8080;/g' /etc/nginx/conf.d/default.conf && \
 # 暴露 8080 端口（非特權端口）
 
 # 確保 nginx user 可寫入必要目錄（避免非 root 啟動失敗）
-RUN chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d
+RUN chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d || true
 
 USER nginx
 
