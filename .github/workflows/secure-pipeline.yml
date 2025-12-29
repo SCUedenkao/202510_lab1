@@ -325,7 +325,6 @@ jobs:
   sonarqube-scan:
     runs-on: ubuntu-latest
     name: 代碼質量掃描 - SonarQube
-    needs: [security-summary]
     steps:
       - name: Checkout 代碼
         uses: actions/checkout@v4
