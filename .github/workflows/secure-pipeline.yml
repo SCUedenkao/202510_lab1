@@ -117,15 +117,6 @@ jobs:
         with:
           sarif_file: reports/dependency-check-report.sarif
 
-- name: Debug SARIF
-  run: |
-    ls -lah trivy-results.sarif || true
-    wc -c trivy-results.sarif || true
-    head -n 30 trivy-results.sarif || true
-    jq '.runs | length' trivy-results.sarif
-
-
-
   # 3. 容器映像安全掃描（僅在存在容器相關檔案時執行）
   container-scan:
     runs-on: ubuntu-latest
@@ -318,11 +309,12 @@ jobs:
           echo ""
           
           # 檢查是否有失敗的 job
-          if [[ "${{ needs.sast-scan.result }}" == "failure" ]] || \
-             [[ "${{ needs.sca-scan.result }}" == "failure" ]] || \
-             [[ "${{ needs.container-scan.result }}" == "failure" ]] || \
-             [[ "${{ needs.iac-scan.result }}" == "failure" ]] || \
-             [[ "${{ needs.secret-scan.result }}" == "failure" ]]; then
+          if [[ "${{ needs.sast-scan.result }}" == "failure" ]] ||
+             [[ "${{ needs.sca-scan.result }}" == "failure" ]] ||
+             [[ "${{ needs.container-scan.result }}" == "failure" ]] ||
+             [[ "${{ needs.iac-scan.result }}" == "failure" ]] ||
+             [[ "${{ needs.secret-scan.result }}" == "failure" ]]
+          then
             echo "⚠️  警告：部分掃描發現問題，請檢查詳細報告"
             echo "all-passed=false" >> $GITHUB_OUTPUT
           else
