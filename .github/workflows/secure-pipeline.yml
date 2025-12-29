@@ -281,7 +281,7 @@ jobs:
   security-summary:
     runs-on: ubuntu-latest
     name: 安全掃描總結
-    needs: [sast-scan, sca-scan, container-scan, iac-scan, secret-scan]
+    needs: [sast-scan, sca-scan, container-scan, iac-scan, secret-scan, sonarqube-scan]
     if: always()
     outputs:
       all-passed: ${{ steps.check-status.outputs.all-passed }}
@@ -299,6 +299,7 @@ jobs:
           echo "3. 容器映像掃描 - Trivy: ${{ needs.container-scan.result }}"
           echo "4. IaC 安全檢查 - Checkov: ${{ needs.iac-scan.result }}"
           echo "5. Secret 掃描 - Gitleaks: ${{ needs.secret-scan.result }}"
+          echo "6. 代碼質量掃描 - SonarQube: ${{ needs.sonarqube-scan.result }}"
           echo ""
           echo "📊 詳細結果請查看："
           echo "   - Security 標籤 → Code scanning alerts"
@@ -310,7 +311,8 @@ jobs:
              [[ "${{ needs.sca-scan.result }}" == "failure" ]] ||
              [[ "${{ needs.container-scan.result }}" == "failure" ]] ||
              [[ "${{ needs.iac-scan.result }}" == "failure" ]] ||
-             [[ "${{ needs.secret-scan.result }}" == "failure" ]]
+             [[ "${{ needs.secret-scan.result }}" == "failure" ]] ||
+             [[ "${{ needs.sonarqube-scan.result }}" == "failure" ]]
           then
             echo "⚠️  警告：部分掃描發現問題，請檢查詳細報告"
             echo "all-passed=false" >> $GITHUB_OUTPUT
@@ -319,11 +321,28 @@ jobs:
             echo "all-passed=true" >> $GITHUB_OUTPUT
           fi
 
-  # 7. 建置並推送 Docker Image 到 GitHub Container Registry
+  # 7. 代碼質量掃描 - SonarQube
+  sonarqube-scan:
+    runs-on: ubuntu-latest
+    name: 代碼質量掃描 - SonarQube
+    needs: [security-summary]
+    steps:
+      - name: Checkout 代碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  # 8. 建置並推送 Docker Image 到 GitHub Container Registry
   build-push-image:
     runs-on: ubuntu-latest
     name: 建置並推送 Docker Image
-    needs: [security-summary]
+    needs: [security-summary, sonarqube-scan]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -378,7 +397,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: 建置網站
-    needs: [security-summary]
+    needs: [security-summary, sonarqube-scan]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout 代碼
