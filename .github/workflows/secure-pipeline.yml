@@ -53,7 +53,7 @@ jobs:
           fi
 
       - name: 上傳 SAST 掃描結果
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: semgrep-results.sarif
@@ -108,11 +108,11 @@ jobs:
             echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"OWASP Dependency-Check","informationUri":"https://owasp.org/www-project-dependency-check/"}},"results":[]}]}' > reports/dependency-check-report.sarif
           elif [ ! -f "reports/dependency-check-report.sarif" ]; then
             echo "警告：SARIF 檔案未找到，建立空白檔案"
-            echo '{"version":"2.1.0","runs":[]}' > reports/dependency-check-report.sarif
+            echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"OWASP Dependency-Check","informationUri":"https://owasp.org/www-project-dependency-check/"}},"results":[]}]}' > reports/dependency-check-report.sarif
           fi
 
       - name: 上傳 SCA 結果
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: reports/dependency-check-report.sarif
@@ -187,11 +187,11 @@ jobs:
             echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"Trivy","informationUri":"https://aquasecurity.github.io/trivy/"}},"results":[]}]}' > trivy-results.sarif
           elif [ ! -f "trivy-results.sarif" ]; then
             echo "警告：SARIF 檔案未找到，建立空白檔案"
-            echo '{"version":"2.1.0","runs":[]}' > trivy-results.sarif
+            echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"Trivy","informationUri":"https://aquasecurity.github.io/trivy/"}},"results":[]}]}' > trivy-results.sarif
           fi
 
       - name: 上傳容器掃描結果
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: trivy-results.sarif
@@ -252,11 +252,11 @@ jobs:
             echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"Checkov","informationUri":"https://www.checkov.io/"}},"results":[]}]}' > results_sarif.sarif
           elif [ ! -f "results_sarif.sarif" ]; then
             echo "警告：SARIF 檔案未找到，建立空白檔案"
-            echo '{"version":"2.1.0","runs":[]}' > results_sarif.sarif
+            echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"Checkov","informationUri":"https://www.checkov.io/"}},"results":[]}]}' > results_sarif.sarif
           fi
 
       - name: 上傳 IaC 掃描結果
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: results_sarif.sarif
