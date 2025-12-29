@@ -23,7 +23,12 @@ RUN sed -i 's/listen\s*80;/listen 8080;/g' /etc/nginx/conf.d/default.conf && \
     sed -i "/^http {/a \    proxy_temp_path /tmp/proxy_temp;\n    client_body_temp_path /tmp/client_temp;\n    fastcgi_temp_path /tmp/fastcgi_temp;\n    uwsgi_temp_path /tmp/uwsgi_temp;\n    scgi_temp_path /tmp/scgi_temp;\n" /etc/nginx/nginx.conf
 
 # 暴露 8080 端口（非特權端口）
-EXPOSE 8080
 
+# 確保 nginx user 可寫入必要目錄（避免非 root 啟動失敗）
+RUN chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d
+
+USER nginx
+
+EXPOSE 8080
 # 啟動 Nginx
 CMD ["nginx", "-g", "daemon off;"]
