@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.description="井字遊戲 - 靜態網頁應用"
 LABEL org.opencontainers.image.licenses="MIT"
 
 # 移除預設的 Nginx 網頁
-RUN rm -rf /usr/share/nginx/html/*
+RUN rm -rf /usr/share/nginx/html/* || true
 
 # 複製靜態檔案到 Nginx 目錄
 COPY app/ /usr/share/nginx/html/
