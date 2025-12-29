@@ -325,6 +325,7 @@ jobs:
   sonarqube-scan:
     runs-on: ubuntu-latest
     name: 代碼質量掃描 - SonarQube
+    if: ${{ secrets.SONAR_TOKEN && secrets.SONAR_HOST_URL }}
     steps:
       - name: Checkout 代碼
         uses: actions/checkout@v4
