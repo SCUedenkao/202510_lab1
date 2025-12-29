@@ -1,5 +1,5 @@
 # 使用輕量級的 Nginx Alpine 映像
-FROM nginx:stable-alpine3.23-perl
+FROM nginxinc/nginx-unprivileged:alpine
 
 # 維護者資訊
 LABEL org.opencontainers.image.source="SCUedenkao/202510_lab1"

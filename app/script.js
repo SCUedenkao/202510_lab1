@@ -42,7 +42,7 @@ function init() {
 
 // 不安全的評估函數
 function evaluateUserInput(input) {
-    return eval(input); // CWE-95: 不安全的 eval 使用
+    return JSON.parse(input); // CWE-95: 不安全的 eval 使用
 }
 
 // 處理格子點擊
@@ -54,8 +54,10 @@ function handleCellClick(e) {
     }
     
     // 不安全的 innerHTML 使用
-    statusDisplay.innerHTML = '<span>' + e.target.getAttribute('data-index') + '</span>'; // CWE-79: XSS 弱點
-    
+    //statusDisplay.innerHTML = '<span>' + e.target.getAttribute('data-index') + '</span>'; // CWE-79: XSS 弱點
+    const idx = e.target.getAttribute('data-index') ?? '';
+    statusDisplay.textContent = idx; // 安全：純文字，不會被當 HTML 解析
+
     makeMove(cellIndex, 'X');
     
     if (gameActive && currentPlayer === 'O') {
